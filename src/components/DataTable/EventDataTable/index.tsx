@@ -49,7 +49,7 @@ const EventDataTable = ({events}: Props) => {
 						{events.map(event =>(
 							<tr key={ event.id }>
 								<td>
-									<Link to="/guests"> { event.name }</Link>
+									<Link to="/guests" className="text-decoration-none"> { event.name }</Link>
 								</td>
 								<td>{ event.address }</td>
 								<td>{ event.date }</td>

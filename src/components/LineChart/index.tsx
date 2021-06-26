@@ -20,18 +20,7 @@ type Props = {
 }
 
 const LineChart = ({dataEvent}: Props) => {
-
-  /*const dataChart = {
-    labels: ['Primeira', 'Segunda', 'Terceira', 'Quarta', 'Quinta', 'Sexta', 'Sétima'],
-    datasets: [{
-      label: 'Nº de eventos',
-      data: [65, 59, 80, 81, 56, 55, 40],
-      fill: false,
-      borderColor: '#333584A9',
-      tension: 0.25
-    }]
-  };*/
-
+  
   const [lineChartData, setLineChartData] = useState<DataChart>({
     labels: [],
     datasets: [{
@@ -45,26 +34,40 @@ const LineChart = ({dataEvent}: Props) => {
 
   useEffect(() => {
 
-    const dates = dataEvent.map(event => event.date);
+    const lineChartLabels = (): string[] => {
+      let dateLabel: string[] = [];
+      dateLabel[0] = dataEvent[0].date;
+
+      for (let i = 0; i < dataEvent.length-2; i++) {
+        
+        for (let j = 1; j <= dataEvent.length-1; j++) {
+          
+          if (dateLabel[i] !== dataEvent[j].date && !dateLabel.includes(dataEvent[j].date)) {
+            dateLabel.push(dataEvent[j].date);
+          }
+        }
+      }
+
+      return dateLabel;
+    }
     
     const totalEventsPerDay = (): number[] => {
-      var occurrence: number[] = [];
-      var count = 0;
-  
-      for (var i = 0; i < dataEvent.length; i++) {
-        for (var j = 1; j < dataEvent.length-1; j++) {
-          if (dataEvent[i].date === dataEvent[j].date) count++;
-        }
-  
+      let occurrence: number[] = [];
+      let count = 0;
+
+      lineChartLabels().forEach(label => {
+        dataEvent.forEach(event => {
+          if (label === event.date) count++;
+        });  
         occurrence.push(count);
         count = 0;
-      }
+      }); 
   
       return occurrence;
     }
-
+   
     setLineChartData({
-      labels: dates,
+      labels: lineChartLabels(),
       datasets: [{
         label: 'Nº de eventos',
         data: totalEventsPerDay(),
@@ -92,7 +95,7 @@ const LineChart = ({dataEvent}: Props) => {
           display: true,
           title: {
             display: true,
-            text: 'Data'
+            text: 'Datas dos eventos'
           }
         },
         y: {
